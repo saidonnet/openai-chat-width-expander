@@ -12,5 +12,6 @@
       "js": ["content.js"]
     }
   ],
-  "host_permissions": ["https://chat.openai.com/*"]
+  "host_permissions": ["https://chat.openai.com/*"],
+  "web_accessible_resources": [{ "resources": ["copy.svg","stop.svg","play.svg"],"matches": ["<all_urls>"]}]
 }
