@@ -9,9 +9,14 @@
   "content_scripts": [
     {
       "matches": ["https://chat.openai.com/*"],
-      "js": ["content.js"]
+      "js": ["swal.js", "content.js"]
     }
   ],
   "host_permissions": ["https://chat.openai.com/*"],
-  "web_accessible_resources": [{ "resources": ["copy.svg","stop.svg","play.svg"],"matches": ["<all_urls>"]}]
+  "web_accessible_resources": [
+    { 
+      "resources": ["english_words.txt", "french_words.txt", "arabic_words.txt", "copy.svg", "stop.svg", "play.svg"], 
+      "matches": ["<all_urls>"] 
+    }
+  ]
 }

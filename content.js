@@ -3,6 +3,7 @@ style.textContent = `
 ::-webkit-scrollbar {
     width: 1rem;
 }
+
 @media (min-width: 1280px) {
     * {
         max-width: unset !important;
@@ -24,21 +25,82 @@ style.textContent = `
     }
 }
 
-#my-floating-button,
-#my-speech-button,
-#my-stop-button {
+#my-floating-button {
     background: white;
+	border-radius:10px;
+	border: 1px solid blue;
     padding: 10px;
     margin-right: 10px;
 }
-#lang-selector {
+#my-speech-button,
+#my-stop-button {
+	border-radius:10px;
+	border: 1px solid blue;
+    background: white;
+    padding: 10px;
     position: fixed;
     top: 20px;
-    right: 20px;
+    right: 200px;
     z-index: 1000;
 }
 `;
+
 document.head.append(style);
+
+let english_dict_str = "";
+let french_dict_str = "";
+let arabic_dict_str = "";
+
+let english_dict = [];
+let french_dict = [];
+let arabic_dict = [];
+
+let DictionariesArePrepared = false;
+
+async function loadDictionaries() {
+    if (!DictionariesArePrepared) {
+        const responseEnglish = await fetch(chrome.runtime.getURL('english_words.txt'));
+        english_dict_str = await responseEnglish.text();
+
+        const responseFrench = await fetch(chrome.runtime.getURL('french_words.txt'));
+        french_dict_str = await responseFrench.text();
+
+        const responseArabic = await fetch(chrome.runtime.getURL('arabic_words.txt'));
+        arabic_dict_str = await responseArabic.text();
+
+        english_dict = english_dict_str.split("\n");
+        french_dict = french_dict_str.split("\n");
+        arabic_dict = arabic_dict_str.split("\n");
+
+        DictionariesArePrepared = true;
+    }
+}
+
+async function detectLanguage(text) {
+    await loadDictionaries();
+
+    let english_count = 0;
+    let french_count = 0;
+    let arabic_count = 0;
+
+    let words = text.split(/\b/);
+
+    for (let word of words) {
+        if (english_dict.includes(word)) english_count++;
+        if (french_dict.includes(word)) french_count++;
+        if (arabic_dict.includes(word)) arabic_count++;
+    }
+
+    if (english_count > french_count && english_count > arabic_count) {
+        return 'en-US';
+    } else if (french_count > english_count && french_count > arabic_count) {
+        return 'fr-FR';
+    } else if (arabic_count > english_count && arabic_count > french_count) {
+        return 'ar-SA';
+    } else {
+        return 'en-US';
+    }
+}
 
 const setIcon = (buttonId, imgPath) => {
     let img = document.createElement('img');
@@ -50,102 +112,83 @@ const setIcon = (buttonId, imgPath) => {
     button.appendChild(img);
 };
 
-// Create a new button element for copying text
 let copyButton = document.createElement('button');
 copyButton.id = 'my-floating-button';
 copyButton.style.position = 'fixed';
 copyButton.style.top = '20px';
-copyButton.style.right = '250px';
+copyButton.style.right = '60px';
+copyButton.style.border = '1px solid blue';
 copyButton.style.zIndex = '1000';
 document.body.append(copyButton);
 setIcon('my-floating-button', 'copy.svg');
 
-// Add event listener for the click event
 copyButton.addEventListener('click', () => {
-    // Get all elements with the specified class name
     let elements = document.getElementsByClassName('flex flex-grow flex-col gap-3');
-
-    // Check if there's at least one such element
     if (elements.length > 0) {
-        // Get the last element
         let lastElement = elements[elements.length - 1];
-
-        // Copy its text content to the clipboard
         navigator.clipboard.writeText(lastElement.textContent).then(function () {
-            console.log('Text copied to clipboard');
+            Swal.fire({
+				toast: true,
+                title: 'Text copied to clipboard',
+                showConfirmButton: false,
+                timer: 1500
+            });
         }).catch(function (err) {
             console.error('Failed to copy text: ', err);
         });
     }
 });
 
-// Create a new button for Text-to-Speech
 let speechButton = document.createElement('button');
 speechButton.id = 'my-speech-button';
 speechButton.style.position = 'fixed';
 speechButton.style.top = '20px';
-speechButton.style.right = '200px';
+speechButton.style.right = '20px';
+speechButton.style.border = '1px solid blue';
 speechButton.style.zIndex = '1000';
 document.body.append(speechButton);
 setIcon('my-speech-button', 'play.svg');
 
-// Create a new button for stopping speech
 let stopButton = document.createElement('button');
 stopButton.id = 'my-stop-button';
 stopButton.style.position = 'fixed';
 stopButton.style.top = '20px';
-stopButton.style.right = '200px';
+stopButton.style.right = '20px';
 stopButton.style.zIndex = '1000';
+stopButton.style.border = '1px solid blue';
 document.body.append(stopButton);
 setIcon('my-stop-button', 'stop.svg');
-
-// Initially hide the stop button
 stopButton.style.display = 'none';
 
-// Add event listener for the speech button click event
-speechButton.addEventListener('click', () => {
-    // Get all elements with the specified class name
+speechButton.addEventListener('click', async () => {
     let elements = document.getElementsByClassName('flex flex-grow flex-col gap-3');
-
-    // Check if there's at least one such element
     if (elements.length > 0) {
-        // Get the last element
         let lastElement = elements[elements.length - 1];
-
-        // Use speech synthesis to speak the text content
-        let lang = dropdown.value;
+        let lang = await detectLanguage(lastElement.textContent);
         let msg = new SpeechSynthesisUtterance(lastElement.textContent);
         msg.lang = lang;
         window.speechSynthesis.speak(msg);
         stopButton.style.display = 'block';
         speechButton.style.display = 'none';
+
+        Swal.fire({
+			toast: true,
+            title: 'Text to speech started',
+            showConfirmButton: false,
+            timer: 1500
+        });
     }
 });
 
-// Add event listener for the stop button click event
 stopButton.addEventListener('click', () => {
-    // Stop speech
     window.speechSynthesis.cancel();
     stopButton.style.display = 'none';
     speechButton.style.display = 'block';
+
+    Swal.fire({
+		toast: true,
+        title: 'Text to speech stopped',
+        showConfirmButton: false,
+        timer: 1500
+    });
 });
-
-// Create a language selection dropdown
-let dropdown = document.createElement('select');
-dropdown.id = 'lang-selector';
-let option1 = document.createElement('option');
-option1.text = 'English';
-option1.value = 'en-US';
-dropdown.add(option1);
-
-let option2 = document.createElement('option');
-option2.text = 'French';
-option2.value = 'fr-FR';
-dropdown.add(option2);
-
-let option3 = document.createElement('option');
-option3.text = 'Arabic';
-option3.value = 'ar-SA';
-dropdown.add(option3);
-
-document.body.append(dropdown);
