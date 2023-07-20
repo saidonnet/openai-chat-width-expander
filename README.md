@@ -1,6 +1,8 @@
 # OpenAI Chat Width Expander
 
 OpenAI Chat Width Expander is a Chrome extension that removes width restrictions on chat.openai.com, enhancing readability and user experience.
+![img](https://github.com/saidonnet/openai-chat-width-expander/assets/3421900/d7fe71bb-9d4f-4060-91c1-902de6165292)
+
 
 ## Installation
 
