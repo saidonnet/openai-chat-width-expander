@@ -29,21 +29,16 @@ style.textContent = `
 #my-stop-button {
     background: white;
     padding: 10px;
+    margin-right: 10px;
 }
-`;
-document.head.append(style);
-
-const buttonStyle = `
+#lang-selector {
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 1000;  // Ensure the button is above other elements
-    padding: 10px 20px;
-    cursor: 'pointer';
-    border: none;
-    border-radius: '4px';
-    box-shadow: '0 2px 5px rgba(0, 0, 0, 0.3)'; // Material Design box shadow
+    z-index: 1000;
+}
 `;
+document.head.append(style);
 
 const setIcon = (buttonId, imgPath) => {
     let img = document.createElement('img');
@@ -55,15 +50,18 @@ const setIcon = (buttonId, imgPath) => {
     button.appendChild(img);
 };
 
-// Create a new button element
-let button = document.createElement('button');
-button.id = 'my-floating-button';
-button.style = buttonStyle;
-document.body.append(button);
+// Create a new button element for copying text
+let copyButton = document.createElement('button');
+copyButton.id = 'my-floating-button';
+copyButton.style.position = 'fixed';
+copyButton.style.top = '20px';
+copyButton.style.right = '250px';
+copyButton.style.zIndex = '1000';
+document.body.append(copyButton);
 setIcon('my-floating-button', 'copy.svg');
 
 // Add event listener for the click event
-button.addEventListener('click', () => {
+copyButton.addEventListener('click', () => {
     // Get all elements with the specified class name
     let elements = document.getElementsByClassName('flex flex-grow flex-col gap-3');
 
@@ -84,9 +82,25 @@ button.addEventListener('click', () => {
 // Create a new button for Text-to-Speech
 let speechButton = document.createElement('button');
 speechButton.id = 'my-speech-button';
-speechButton.style = buttonStyle;
+speechButton.style.position = 'fixed';
+speechButton.style.top = '20px';
+speechButton.style.right = '200px';
+speechButton.style.zIndex = '1000';
 document.body.append(speechButton);
 setIcon('my-speech-button', 'play.svg');
+
+// Create a new button for stopping speech
+let stopButton = document.createElement('button');
+stopButton.id = 'my-stop-button';
+stopButton.style.position = 'fixed';
+stopButton.style.top = '20px';
+stopButton.style.right = '200px';
+stopButton.style.zIndex = '1000';
+document.body.append(stopButton);
+setIcon('my-stop-button', 'stop.svg');
+
+// Initially hide the stop button
+stopButton.style.display = 'none';
 
 // Add event listener for the speech button click event
 speechButton.addEventListener('click', () => {
@@ -108,13 +122,6 @@ speechButton.addEventListener('click', () => {
     }
 });
 
-// Create a new button for stopping speech
-let stopButton = document.createElement('button');
-stopButton.id = 'my-stop-button';
-stopButton.style = buttonStyle;
-document.body.append(stopButton);
-setIcon('my-stop-button', 'stop.svg');
-
 // Add event listener for the stop button click event
 stopButton.addEventListener('click', () => {
     // Stop speech
@@ -123,5 +130,22 @@ stopButton.addEventListener('click', () => {
     speechButton.style.display = 'block';
 });
 
-// Initially hide the stop button
-stopButton.style.display = 'none';
+// Create a language selection dropdown
+let dropdown = document.createElement('select');
+dropdown.id = 'lang-selector';
+let option1 = document.createElement('option');
+option1.text = 'English';
+option1.value = 'en-US';
+dropdown.add(option1);
+
+let option2 = document.createElement('option');
+option2.text = 'French';
+option2.value = 'fr-FR';
+dropdown.add(option2);
+
+let option3 = document.createElement('option');
+option3.text = 'Arabic';
+option3.value = 'ar-SA';
+dropdown.add(option3);
+
+document.body.append(dropdown);
