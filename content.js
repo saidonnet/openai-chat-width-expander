@@ -4,26 +4,24 @@ style.textContent = `
     width: 1rem;
 }
 
-@media (min-width: 1280px) {
-    * {
+@media (min-width: 768px) {
+    .flex.p-4.gap-4.text-base.md\\:gap-6.md\\:max-w-2xl.lg\\:max-w-\\[38rem\\].xl\\:max-w-3xl.md\\:py-6.lg\\:px-0.m-auto {
         max-width: unset !important;
-        overflow: auto !important;
     }
 }
 
 @media (min-width: 1024px) {
-    * {
+    .flex.p-4.gap-4.text-base.md\\:gap-6.md\\:max-w-2xl.lg\\:max-w-\\[38rem\\].xl\\:max-w-3xl.md\\:py-6.lg\\:px-0.m-auto {
         max-width: unset !important;
-        overflow: auto !important;
     }
 }
 
-@media (min-width: 768px) {
-    * {
+@media (min-width: 1280px) {
+    .flex.p-4.gap-4.text-base.md\\:gap-6.md\\:max-w-2xl.lg\\:max-w-\\[38rem\\].xl\\:max-w-3xl.md\\:py-6.lg\\:px-0.m-auto {
         max-width: unset !important;
-        overflow: auto !important;
     }
 }
+
 
 #my-floating-button {
     background: white;
