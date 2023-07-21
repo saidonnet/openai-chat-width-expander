@@ -4,21 +4,33 @@ style.textContent = `
     width: 1rem;
 }
 
+.flex.p-4.gap-4.text-base.md\\:gap-6.md\\:max-w-2xl.lg\\:max-w-\\[38rem\\].xl\\:max-w-3xl.md\\:py-6.lg\\:px-0.m-auto {
+    max-width: unset !important;
+	padding:30px 30px !important;
+}
 @media (min-width: 768px) {
     .flex.p-4.gap-4.text-base.md\\:gap-6.md\\:max-w-2xl.lg\\:max-w-\\[38rem\\].xl\\:max-w-3xl.md\\:py-6.lg\\:px-0.m-auto {
         max-width: unset !important;
+		padding:30px 30px !important;
     }
+	.md\\:max-w-3xl {
+		max-width: unset !important;
+		padding:30px 30px !important;
+	}
+
 }
 
 @media (min-width: 1024px) {
     .flex.p-4.gap-4.text-base.md\\:gap-6.md\\:max-w-2xl.lg\\:max-w-\\[38rem\\].xl\\:max-w-3xl.md\\:py-6.lg\\:px-0.m-auto {
         max-width: unset !important;
+		padding:30px !important;
     }
 }
 
 @media (min-width: 1280px) {
     .flex.p-4.gap-4.text-base.md\\:gap-6.md\\:max-w-2xl.lg\\:max-w-\\[38rem\\].xl\\:max-w-3xl.md\\:py-6.lg\\:px-0.m-auto {
         max-width: unset !important;
+		padding:30px 30px !important;
     }
 }
 
@@ -124,7 +136,7 @@ copyButton.addEventListener('click', () => {
     let elements = document.getElementsByClassName('flex flex-grow flex-col gap-3');
     if (elements.length > 0) {
         let lastElement = elements[elements.length - 1];
-        navigator.clipboard.writeText(lastElement.textContent).then(function () {
+        navigator.clipboard.writeText(lastElement.innerText).then(function () {
             Swal.fire({
 				toast: true,
                 title: 'Text copied to clipboard',
